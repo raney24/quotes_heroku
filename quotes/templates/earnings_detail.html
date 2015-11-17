@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<p>name: {{ object.symbol }}</p>
+<!--  -->
+<ol>
+{% for er in stock.earnings_set.all %}
+	<li>
+		<p>before: {{ er.before_price }}</p>
+		<p>after: {{ er.after_price }}</p>
+
+    </li>
+{% endfor %}
+</ol>
+
+
+{% endblock %}

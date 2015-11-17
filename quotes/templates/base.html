@@ -1,0 +1,35 @@
+<html>
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/main.css"/>
+</head>
+<body>
+<h1>Stocks</h1>
+
+<header>
+	<nav class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+			<ul class="nav navbar-nav">
+				<li><a href="/">Stocks</a></li>
+				{% if user.is_authenticated %}
+				<li><a href="/stock/create">Add New</a></li>
+				{% endif %}
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+			{% if user.is_authenticated %}
+				<li><a href="{% url 'logout' %}">Logout</a></li>
+				<li><a href="{% url 'profile' slug=user.username %}">{{ user.username }}</a></li>
+			{% else %}
+				<li><a href="{% url 'registration_register' %}">Register</a></li>
+				<li><a href="/login">Login</a></li>
+			{% endif %}
+			</ul>
+		</div>
+	</nav>
+</header>
+
+{% block content %}
+{% endblock %}
+
+</body>
+</html>

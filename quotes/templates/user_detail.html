@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{{ object.username }}'s Profile</h2>
+
+<ol>
+{% for stock in object.stock_set.all %}
+	<li>{{ stock.symbol }}</li>
+{% endfor %}
+</ol>
+
+{% if object.username == user.username %}
+	<p><a href='{% url "edit_profile" %}'>Edit my profile</a></p>
+{% endif %}
+
+{% endblock %}

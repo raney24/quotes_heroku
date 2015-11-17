@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+  #id_honeypot {
+    display: none;
+  }
+</style>
+
+<h2><a href="#">{{ object.symbol }}</a></h2>
+<p>{{ object.current_price }} </p>
+<p>{{ object.greeting }} </p>
+<div class="desc">
+  <!-- <p> Last Accessed: {{ object.last_accessed }} </p> -->
+</div>
+
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if is_paginated %}
+<ol start="{{ page_obj.start_index }}">
+{% else %}
+<ol>
+{% endif %}
+{% for stock in stock_symbols %}
+    <li>
+      <a href="{% url 'stock_detail' pk=stock.pk %}">	
+      <b>{{ stock.symbol }}</b>
+      </a>
+    </li>
+{% endfor %}
+</ol>
+
+{% for er in stock.earnings_set %}
+	<li>
+		<p>before: {{ er.before_price }}</p>
+		<p>after: {{ er.after_price }}</p>
+
+    </li>
+{% endfor %}
+
+{% if is_paginated %}
+<div class="pagination">
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">More &raquo;</a>
+    {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}
