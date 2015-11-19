@@ -54,46 +54,6 @@ class EarningsReportView(DetailView):
 				er.save()
 		return stock
 
-	# def get_object(self):
-	# 	stock = super(EarningsReportView, self).get_object()
-	# 	# stock.prefetch_related()	
-	# 	stockHelper = ER_Stock(stock.symbol)
-	# 	stockHelper.get_high_prices(date)
-	# 	er_dict = get_earnings_reports(stock.symbol)
-	# 	dt = datetime.datetime.strptime(er_dict.keys()[1], '%m/%d/%Y').date()
-	# 	print dt
-	# 	# stockHelper.get_er_quarter(date)
-	# 	er = Earnings(before_price = stockHelper.day_before_price, after_price = stockHelper.day_after_price, er_date = dt)
-	# 	er.stock = stock
-	# 	print stockHelper.day_before_price, stockHelper.day_after_price, er.er_date
-	# 	print er.stock_id
-		
-	# 	# if not Earnings.objects.filter().exists():
-	# 		# print "asDasdasd"
-	# 	er.save()
-	# 	return stock
-
-	# def get_object(self):
-	# 	stock = super(EarningsReportView, self).get_object()
-	# 	er_dict = get_earnings_reports(stock.symbol)
-	# 	dt = datetime.datetime.strptime(er_dict.keys()[1], '%m/%d/%Y').date()
-	# 	before_price, after_price = get_high_prices(stock.symbol, dt)
-	# 	print before_price, after_price, dt
-	# 	er = Earnings(before_price = before_price, after_price = after_price, er_date = dt)
-	# 	if not Earnings.objects.filter(er_date = er.er_date, stock_id = er.stock_id).exists():
-	#  		er.save()
-	#  	return stock
-
-	# def get_object(self):
-	# 	stock = super(EarningsReportView, self).get_object()
-	# 	# stock.prefetch_related()	
-	# 	stockHelper = ER_Stock(stock.symbol)
-	# 	stockHelper.get_high_prices(date)
-	# 	er = Earnings(before_price = stockHelper.day_before_price, after_price = stockHelper.day_after_price)
-	# 	er.stock = stock
-	# 	er.save()
-	# 	return stock
-	# context_object_name = 'stock_earnings'
 
 class StockDetailView(DetailView):
 	model = Stock
