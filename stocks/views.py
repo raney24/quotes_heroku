@@ -20,8 +20,6 @@ class StockListView(ListView):
 	model = Stock
 	context_object_name = 'stock_symbols'
 
-
-
 class StockCreateView(CreateView):
 	model = Stock
 	form_class = StockForm
@@ -43,14 +41,13 @@ class EarningsReportView(DetailView):
 		stock = super(EarningsReportView, self).get_object()
 		er_dict = get_earnings_reports(stock.symbol)
 		for key in er_dict:
-			dt = datetime.datetime.strptime(key, '%m/%d/%Y').date()
-			before_price, after_price = get_high_prices(stock.symbol, dt)
-			
-			print before_price, after_price, dt
-			# print dt
-			er = Earnings(before_price = before_price, after_price = after_price, er_date = dt)
+			er_date = datetime.datetime.strptime(key, '%m/%d/%Y').date()
+			before_price, after_price = get_high_prices(stock.symbol, er_date)
+			er_quarter = get_er_quarter(er_date)
+			er = Earnings(before_price = before_price, after_price = after_price, er_date = er_date, er_quarter = er_quarter)
 			er.stock = stock
-			if not Earnings.objects.filter(er_date = er.er_date, stock_id = er.stock_id).exists():
+			if not Earnings.objects.filter(er_quarter = er.er_quarter, stock_id = er.stock_id).exists():
+				print er.er_date
 				er.save()
 		return stock
 
