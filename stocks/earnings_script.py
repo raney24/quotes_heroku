@@ -23,7 +23,6 @@ def get_er_quarter(date):
 		q = "Q4"
 	return q
 
-
 class ER_Stock(object):
 	def __init__(self, symbol):
 		self.symbol = symbol

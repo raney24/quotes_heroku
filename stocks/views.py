@@ -1,13 +1,16 @@
 from django.views.generic import ListView, DetailView
 from django.views.generic.base import View
 from django.views.generic.edit import UpdateView, CreateView, UpdateView, DeleteView
-from .models import Stock, Earnings
+from .models import Stock, Earnings, UserProfileManager, UserProfile
 from .forms import  StockForm
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django.shortcuts import render_to_response, redirect, render
+from django.contrib.auth import logout as auth_logout
+from django.contrib.auth.decorators import login_required
 import ystockquote
 import datetime
 from datetime import datetime
@@ -15,6 +18,7 @@ from datetime import date, timedelta
 from earnings_script import ER_Stock
 from scraper import *
 from earnings_script import *
+
 
 class StockListView(ListView):
 	model = Stock
@@ -81,6 +85,23 @@ class StockUpdateView(UpdateView):
 class StockDeleteView(DeleteView):
 	model = Stock
 	success_url = reverse_lazy("home")
+
+def user_profile(request, username):
+	user = get_object_or_404(User, username=username)
+	profile = UserProfile.objects.get(user=user)
+
+	return render(request, 'public/profile.html', {'profile': profile})
+
+# def login(request):
+# 	return render(request, 'login.html')
+
+# @login_required(login_url='/')
+# def home(request):
+# 	return render_to_response('home.html')
+
+# def logout(request):
+# 	auth_logout(request)
+# 	return redirect('/')
 
 
 

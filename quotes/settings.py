@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 
+from config import *
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
@@ -39,13 +41,37 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social.apps.django_app.default',
 
 
     'stocks',
     'quotes',
 )
 
+SOCIAL_AUTH_TWITTER_KEY = 'PMgImxZ6W7cxyj7wCqTvAdNpR'
+SOCIAL_AUTH_TWITTER_SECRET = 'V9HtlzSQ8I7Cq9HWDI8gt45JvGsPI43zuhH9aVk9xPIunMyogZ'
+SOCIAL_AUTH_FACEBOOK_KEY = '1621525324778809'
+SOCIAL_AUTH_FACEBOOK_SECRET = '308d297ea84756be4f28b6b4fa0bc144'
 
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.core.context_processors.tz',
+    'django.contrib.messages.context_processors.messages',
+    'social.apps.django_app.context_processors.backends',
+    'social.apps.django_app.context_processors.login_redirect',
+)
+
+AUTHENTICATION_BACKENDS = (
+    'social.backends.facebook.FacebookOAuth2',
+    'social.backends.google.GoogleOAuth2',
+    'social.backends.twitter.TwitterOAuth',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',

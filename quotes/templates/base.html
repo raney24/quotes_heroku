@@ -18,8 +18,8 @@
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 			{% if user.is_authenticated %}
-				<li><a href="{% url 'logout' %}">Logout</a></li>
-				<li><a href="{% url 'profile' slug=user.username %}">{{ user.username }}</a></li>
+				<li><a href="/logout">Logout</a></li>
+				<li><a href="">{{ user.username }}</a></li>
 			{% else %}
 				<li><a href="{% url 'registration_register' %}">Register</a></li>
 				<li><a href="/login">Login</a></li>

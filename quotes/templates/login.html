@@ -1,27 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Login</h2>
-
-{% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
+{% if user and not user.is_anonymous %}
+  <a>Hello, {{ user.get_full_name }}!</a>
+  <br>
+  <a href="/logout">Logout</a>
+{% else %}
+  <a href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}">Login with Twitter</a>
 {% endif %}
-
-<form method="post" action="{% url 'django.contrib.auth.views.login' %}">
-  {% csrf_token %}
-  <table>
-    <tr>
-      <td>{{ form.username.label_tag }}</td>
-      <td>{{ form.username }}</td>
-    </tr>
-    <tr>
-      <td>{{ form.password.label_tag }}</td>
-      <td>{{ form.password }}</td>
-    </tr>
-  </table>
-  
-  <input type="submit" value="login" />
-  <input type="hidden" name="next" value="{{ next }}" />
 </form>
 
 {% endblock %}

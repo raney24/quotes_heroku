@@ -36,6 +36,11 @@ urlpatterns = patterns('',
 
 	url(r'^stock/delete/(?P<pk>\d+)/$', auth(StockDeleteView.as_view()), name='stock_delete'),
 
+	url('', include('social.apps.django_app.urls', namespace='social')),
+	url(r'^$', 'stocks.views.login'),
+    url(r'^home/$', 'stocks.views.home'),
+    url(r'^logout/$', 'stocks.views.logout'),
+
 	# url(r'^(?P<pk>[0-9]+)/$', views.index, name='test'),
     # Examples:
     # url(r'^$', 'quotes.views.home', name='home'),
