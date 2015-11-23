@@ -25,7 +25,8 @@ class Earnings(models.Model):
 	stock = models.ForeignKey(Stock)
 	before_price = models.DecimalField(max_digits=10, decimal_places=2)
 	after_price = models.DecimalField(max_digits=10, decimal_places=2)
-	er_date = models.DateField(auto_now_add=True)
+	er_date = models.DateField()
+	er_quarter = models.TextField(default="Q1")
 	# er_date = models.CharField(max_length=10, )
 
 	def __unicode__(self):

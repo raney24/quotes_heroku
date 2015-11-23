@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load staticfiles %}
 {% block content %}
 
 {% if is_paginated %}
@@ -9,7 +9,7 @@
 {% endif %}
 {% for stock in stock_symbols %}
     <li>
-      <a href="{% url 'stock_detail' pk=stock.pk %}">	
+      <a href="{% url 'stock_er_detail' pk=stock.pk %}">	
       <b>{{ stock.symbol }}</b>
       </a>
     </li>

@@ -28,7 +28,7 @@ urlpatterns = patterns('',
 
 	url(r'^stock/(?P<pk>\d+)/$', StockDetailView.as_view(), name='stock_detail'),
 
-	url(r'^stock/er/(?P<pk>\d+)/$', EarningsReportView.as_view(template_name="earnings_detail.html")),
+	url(r'^stock/er/(?P<pk>\d+)/$', EarningsReportView.as_view(template_name="earnings_detail.html"), name='stock_er_detail'),
 
 	# (r'^about/', MyView.as_view()),
 

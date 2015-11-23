@@ -12,6 +12,17 @@ def get_high_prices(symbol, date):
 	# print "daybefore: ", day_before_price
 	return (float(day_before_price), float(day_after_price))
 
+def get_er_quarter(date):
+	if date.month < 4:
+		q = "Q1"
+	elif date.month < 7:
+		q = "Q2"
+	elif date.month < 10:
+		q = "Q3"
+	else:
+		q = "Q4"
+	return q
+
 
 class ER_Stock(object):
 	def __init__(self, symbol):
