@@ -17,6 +17,7 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+LOGIN_REDIRECT_URL = '/'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -43,10 +44,12 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'social.apps.django_app.default',
 
-
     'stocks',
     'quotes',
+    'rest_framework',
 )
+
+AUTH_PROFILE_MODULE = "account.UserProfile"
 
 SOCIAL_AUTH_TWITTER_KEY = 'PMgImxZ6W7cxyj7wCqTvAdNpR'
 SOCIAL_AUTH_TWITTER_SECRET = 'V9HtlzSQ8I7Cq9HWDI8gt45JvGsPI43zuhH9aVk9xPIunMyogZ'

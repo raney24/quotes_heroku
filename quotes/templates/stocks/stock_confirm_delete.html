@@ -2,11 +2,11 @@
 
 {% block content %}
 
-<p>Are you sure you want to delete "{{ object.title }}"?</p>
+<p>Are you sure you want to delete "{{ object.symbol }}"?</p>
 
 <form method="post" action="{% url 'stock_delete' pk=object.pk %}">
   {% csrf_token %}
-  <a href="{% url 'stock_detail' pk=object.pk %}">Go back</a> 
+  <a href="{% url 'stock_er_detail' pk=object.pk %}">Go back</a> 
   <p><input type="submit" value="Confirm deletion" /></p>
 </form> 
 

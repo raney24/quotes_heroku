@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Count
 from django.core.urlresolvers import reverse
 import ystockquote
+from django.contrib.auth.models import User
 
 class Stock(models.Model):
 	symbol = models.CharField("Stock Symbol", max_length=5)
@@ -36,19 +37,11 @@ class Earnings(models.Model):
 	# def get_absolute_url(self):
 	# 	return reverse("earnings", kwargs={"pk": str(self.id)})
 
-class UserProfileManager(models.Manager):
-	def create_user(self, user_name, email, password):
-		user = User.objects.create_user(user_name, email, password)
-		profile = UserProfile(user = user)
-
-		profile.save()
-		return user
-
 class UserProfile(models.Model):
-	user = models.ForeignKey(User, unique = True)
-	email_validated = models.BooleanField(default = False)
+	user = models.OneToOneField(User, unique=True)
 
-	objects = UserProfileManager
+	def __unicode__(self):
+		return "%s's profile" % self.user
 
 
 

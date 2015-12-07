@@ -1,11 +1,42 @@
 {% extends "base.html" %}
-
+{% load staticfiles %}
 {% block content %}
 <h2>{{ object.username }}'s Profile</h2>
 
 <ol>
 {% for stock in object.stock_set.all %}
-	<li>{{ stock.symbol }}</li>
+	<!-- <li>{{ stock.symbol }} {% if user.is_authenticated %}<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete-modal"> 
+	  Delete {{ stock.symbol }}
+	</button>{% endif %}</li> -->
+	<li> {{ stock.symbol }} {% if user.is_authenticated %}<a href="{% url 'stock_delete' pk=stock.pk %}">Delete {{ stock.symbol }}{% endif %}</a></li>
+	
+
+	<!-- <div class="modal fade" tabindex="-1" role="dialog" id="delete-modal">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title">Hey, are you sure you want to delete {{ stock.symbol }}?</h4>
+	      </div>
+	      <div class="modal-body">
+	        
+			<form method="post" action="{% url 'stock_delete' pk=stock.pk %}">
+			  {% csrf_token %}
+			  <button type="submit" class="btn btn-danger">Yeap, I'm sure.</button>
+			</form>
+	      </div>
+	    </div>
+	  </div>
+	</div> -->
+
+	<div class="modal fade" tabindex="-1" role="dialog" id="delete-modal">
+		<div class
+		<div class="modal-content">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			
+		</div>
+	</div>
+	
 {% endfor %}
 </ol>
 
