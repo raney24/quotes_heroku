@@ -146,6 +146,8 @@ STATIC_URL = '/static/'
 
 # Parse database configuration from $DATABASE_URL
 import dj_database_url
+
+# COMMENT OUT FOR HEROKU DEPLOYMENT
 DATABASES['default'] =  dj_database_url.config()
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
@@ -163,3 +165,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
+ABSOLUTE_URL_OVERRIDES = {
+   'auth.user': lambda o: "/",
+}
