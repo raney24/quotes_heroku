@@ -147,6 +147,9 @@ def register(request):
             login(request, user)
             return redirect('stock_list.html')
 
+    def get_success_url(self, request, user):
+    	return "/"
+
     return render(request, 'public/register.html', {'form': user_form})
 
 
