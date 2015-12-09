@@ -7,6 +7,9 @@ class StockForm(forms.ModelForm):
 		model = Stock
 		exclude = ("submitter", "current_price")
 
+	def clean_name(self):
+		return self.cleaned_data["symbol"].upper()
+
 class UserForm(forms.ModelForm):
 	class Meta:
 		model = User

@@ -50,8 +50,20 @@ class EarningsReportView(DetailView):
 			er_date = datetime.datetime.strptime(key, '%m/%d/%Y').date()
 			before_price, after_price = get_high_prices(stock.symbol, er_date)
 			er_quarter = get_er_quarter(er_date)
-			er = Earnings(before_price = before_price, after_price = after_price, er_date = er_date, er_quarter = er_quarter)
+			diff = before_price - after_price
+			if before_price > after_price:
+				percent_sign = -1
+			else:
+				percent_sign = 1
+			percent_change = (diff / before_price * 100) * percent_sign
+			print percent_change
+			er = Earnings(before_price = before_price, 
+							after_price = after_price, 
+							er_date = er_date, 
+							er_quarter = er_quarter,
+							percent_change = percent_change)
 			er.stock = stock
+
 			if not Earnings.objects.filter(er_quarter = er.er_quarter, stock_id = er.stock_id).exists():
 				print er.er_date
 				er.save()

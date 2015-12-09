@@ -14,6 +14,10 @@ class Stock(models.Model):
 
 	objects = models.Manager()
 
+	def save(self, force_insert=False, force_update=False):
+		self.symbol = self.symbol.upper()
+		super(Stock, self).save(force_insert, force_update)
+
 	def last_er(self):
 		return self.earnings_set.order_by(id).last()
 
@@ -29,6 +33,7 @@ class Earnings(models.Model):
 	after_price = models.DecimalField(max_digits=10, decimal_places=2)
 	er_date = models.DateField()
 	er_quarter = models.TextField(default="Q1")
+	percent_change = models.DecimalField(max_digits=3, decimal_places=2, null=True)
 	# er_date = models.CharField(max_length=10, )
 
 	def __unicode__(self):

@@ -18,5 +18,58 @@
 {% endfor %}
 </ol>
 
+Table
+
+<table class="table table-condensed">
+	<tr>
+		<th></th>
+	{% for er in stock.earnings_set.all %}
+		<td>{{ er.er_quarter }}</td>
+	{% endfor %}
+	</tr>
+	<tr>
+		<th>Price After</th>
+	{% for er in stock.earnings_set.all %}
+		<td id="after-price">{{ er.after_price }}</td>
+	{% endfor %}
+	</tr>
+	<tr>
+		<th>Price Before</th>
+	{% for er in stock.earnings_set.all %}
+		<td id="before-price">{{ er.before_price }}</td>
+	{% endfor %}
+	</tr>
+	<tr>
+		<th>Percent Change</th>
+	{% for er in stock.earnings_set.all %}
+		<td id="percent-change">{{ er.percent_change }}</td>
+	{% endfor %}
+	</tr>
+	<tr>
+		<th>Date Released</th>
+	{% for er in stock.earnings_set.all %}
+		<td>{{ er.er_date }}</td>
+	{% endfor %}
+	</tr>
+
+</table>
+
+<script>
+	$(document).ready(function() {
+		// var bp = parseFloat($("#before-price").text());
+		// var ap = parseFloat($("#after-price").text());
+		// console.log("bp: " , bp);
+		// var percent_change = ap+bp
+		// $("#percent-change").html(percent_change);
+		// console.log(percent_change);
+
+	})
+	
+</script>
 
 {% endblock %}
+
+
+
+
+
