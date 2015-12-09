@@ -114,8 +114,8 @@ class UserProfileEditView(UpdateView):
 	def get_object(self, queryset=None):
 		return UserProfile.objects.get_or_create(user = self.request.user)[0]
 
-	def get_success_url(self):
-		return reverse("profile", kwargs={'slug': self.request.user})
+	# def get_success_url(self):
+	# 	return reverse("profile", kwargs={'slug': self.request.user})
 
 @login_required
 def user_profile(request, username):
@@ -146,9 +146,6 @@ def register(request):
                                 password=request.POST['password'])
             login(request, user)
             return redirect('stock_list.html')
-
-    def get_success_url(self, request, user):
-    	return "/"
 
     return render(request, 'public/register.html', {'form': user_form})
 
