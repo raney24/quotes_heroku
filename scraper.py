@@ -1,14 +1,43 @@
 from bs4 import BeautifulSoup
 import urllib2
 import re
+from datetime import datetime
+# import datetime
+import dateutil.parser as dparser
 
-def get_earnings_reports(symbol):
+def get_soup(symbol):
 	nasURL = 'http://www.nasdaq.com/earnings/report/'
 	symbolLower = symbol.lower()
 	proxy_handler = urllib2.ProxyHandler({'http': 'http://www.nasdaq.com/earnings/report/' + symbolLower})
 	opener = urllib2.build_opener(proxy_handler)
-	r = opener.open('http://www.nasdaq.com/earnings/report/goog')
+	r = opener.open('http://www.nasdaq.com/earnings/report/' + symbolLower)
 	soup = BeautifulSoup(r, "html.parser")
+	return soup
+
+def get_stock_title(symbol):
+	soup = get_soup(symbol)
+	title = soup.find("title")
+	title = str(title.get_text())
+	title = title.partition("(")[0]
+	return title
+
+def get_projected_er_date(symbol):
+	soup = get_soup(symbol)
+	er_projection = soup.find("span", { "id" : "two_column_main_content_reportdata" })
+	er_projection = str(er_projection.get_text())
+	match = re.search(r'(\d+/\d+/\d+)', er_projection)
+	if match:
+		d = match.group(1)
+		d = datetime.strptime(d, '%m/%d/%Y').strftime('%Y-%m-%d')
+	else: 
+		d = "2000-1-1"
+	return d
+
+
+get_projected_er_date("GOOG")
+
+def get_earnings_reports(symbol):
+	soup = get_soup(symbol)
 	letters = soup.find_all("div", class_="genTable")
 	tr = letters[0].find_all("td")
 

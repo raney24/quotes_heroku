@@ -148,7 +148,7 @@ STATIC_URL = '/static/'
 import dj_database_url
 
 # COMMENT OUT FOR HEROKU DEPLOYMENT
-DATABASES['default'] =  dj_database_url.config()
+# DATABASES['default'] =  dj_database_url.config()
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

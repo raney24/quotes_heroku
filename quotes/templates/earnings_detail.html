@@ -3,22 +3,8 @@
 
 {% block content %}
 
-
-<p>name: {{ object.symbol }}</p>
-<!--  -->
-<ol>
-{% for er in stock.earnings_set.all %}
-	<li>
-		<p>before: {{ er.before_price }}</p>
-		<p>after: {{ er.after_price }}</p>
-		<p>date: {{ er.er_date }}</p>
-		<p>quarter: {{ er.er_quarter }}</p>
-
-    </li>
-{% endfor %}
-</ol>
-
-Table
+<p>name: {{ object.full_title }}</p>
+<p>symbol: {{ object.symbol }}</p>
 
 <table class="table table-condensed">
 	<tr>
@@ -42,7 +28,7 @@ Table
 	<tr>
 		<th>Percent Change</th>
 	{% for er in stock.earnings_set.all %}
-		<td id="percent-change">{{ er.percent_change }}</td>
+		<td id="percent-change">{{ er.percent_change }}%</td>
 	{% endfor %}
 	</tr>
 	<tr>
@@ -54,14 +40,43 @@ Table
 
 </table>
 
+<div id="chart" style="height: 250px;"></div>
+<p>Next ER: {{ object.projected_er_date }}</p>
+
 <script>
+	er_arr = [];
+	$('td#percent-change').each(function(){
+		er_arr.push($(this).text());
+	});
+		// data = [
+		// 	{ quarter: 'Q1'}
+		// ]
+		console.log(er_arr);
+	new Morris.Line({
+		element: 'chart',
+
+		data: [
+			{ quarter: 'Q1', value: er_arr[0] },
+			{ quarter: 'Q2', value: er_arr[1] },
+			{ quarter: 'Q3', value: er_arr[2] },
+			{ quarter: 'Q4', value: er_arr[3] },
+		],
+
+		xkey: 'quarter',
+
+		ykeys: ['value'],
+
+		labels: ['Value'],
+
+		goals: [0],
+
+		goalLineColors: ['red'],
+
+		parseTime: false
+	});
+
 	$(document).ready(function() {
-		// var bp = parseFloat($("#before-price").text());
-		// var ap = parseFloat($("#after-price").text());
-		// console.log("bp: " , bp);
-		// var percent_change = ap+bp
-		// $("#percent-change").html(percent_change);
-		// console.log(percent_change);
+		
 
 	})
 	
