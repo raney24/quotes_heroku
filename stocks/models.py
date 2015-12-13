@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import Count
 from django.core.urlresolvers import reverse
 import ystockquote
-# from scraper import *
+from scraper import *
 from django.contrib.auth.models import User
 
 class Stock(models.Model):
