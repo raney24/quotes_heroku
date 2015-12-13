@@ -20,7 +20,7 @@ class Stock(models.Model):
 	def save(self, force_insert=False, force_update=False):
 		self.symbol = self.symbol.upper()
 
-		# self.full_title = get_stock_title(self.symbol)
+		self.full_title = get_stock_title(self.symbol)
 
 		pd = get_projected_er_date(self.symbol)
 		print "pd:", pd
