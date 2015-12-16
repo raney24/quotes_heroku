@@ -4,9 +4,11 @@ from django.core.urlresolvers import reverse
 import ystockquote
 from scraper import *
 from django.contrib.auth.models import User
+from django.db import IntegrityError
+from django.shortcuts import render_to_response
 
 class Stock(models.Model):
-	symbol = models.CharField("Stock Symbol", max_length=5)
+	symbol = models.CharField("Stock Symbol", max_length=5, unique=True)
 	full_title = models.CharField("Stock Name", max_length=40, default="Unknown Stock")
 	submitted_on = models.DateTimeField(auto_now_add=True)
 	submitter = models.ForeignKey(User)
@@ -17,18 +19,25 @@ class Stock(models.Model):
 
 	objects = models.Manager()
 
-	def save(self, force_insert=False, force_update=False):
-		self.symbol = self.symbol.upper()
+	# def save(self, force_insert=False, force_update=False):
+	def save(self, **kwargs):
+		try: 
+			self.symbol = self.symbol.upper()
 
-		self.full_title = get_stock_title(self.symbol)
 
-		pd = get_projected_er_date(self.symbol)
-		print "pd:", pd
-		self.projected_er_date = get_projected_er_date(self.symbol)
+			self.full_title = get_stock_title(self.symbol)
+
+			pd = get_projected_er_date(self.symbol)
+			# print "pd:", pd
+			self.projected_er_date = get_projected_er_date(self.symbol)
 		# projected_er_date = get_projected_er_date(stock.symbol)
 		# stock = Stock(projected_er_date = projected_er_date)
 
-		super(Stock, self).save(force_insert, force_update)
+		# super(Stock, self).save(force_insert, force_update)
+
+			super(Stock, self).save(**kwargs)
+		except IntegrityError as e:
+			return render_to_response("stocks/stock_form.html", {"message": e.message})
 
 	def last_er(self):
 		return self.earnings_set.order_by(id).last()

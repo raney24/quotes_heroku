@@ -42,7 +42,11 @@ urlpatterns = patterns('',
 	#user auth
 	url(r'^logout/$', 'django.contrib.auth.views.logout', { 'next_page':"/" }),
 
-	# url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+	url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+	url(r'^api/v1/stocks/$', views.APIStockList.as_view()),
+	url(r'^api/v1/stocks/(?P<pk>[0-9]+)$', views.APIStockDetail.as_view()),	
+	url(r'^api/v1/users/$', views.APIUserList.as_view()),
+	url(r'^api/v1/users/(?P<pk>[0-9]+)$', views.APIUserDetail.as_view()),	
 	# url(r'^', include(router.urls)),
 	
 
@@ -59,4 +63,5 @@ urlpatterns = patterns('',
 )
 
 #REST URLS
-
+from rest_framework.urlpatterns import format_suffix_patterns
+urlpatterns = format_suffix_patterns(urlpatterns)

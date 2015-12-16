@@ -10,7 +10,7 @@
 {% for stock in stock_symbols %}
     <li>
       <a href="{% url 'stock_er_detail' pk=stock.pk %}">	
-      <b>{{ stock.symbol }}</b>
+      <b class="stock-symbol">{{ stock.symbol }}</b>
       </a>
       {{ stock.full_title }}
     </li>
@@ -25,12 +25,16 @@
     </li>
 {% endfor %}
 
-{% if is_paginated %}
+
+
+<!-- {% if is_paginated %}
 <div class="pagination">
     {% if page_obj.has_next %}
     <a href="?page={{ page_obj.next_page_number }}">More &raquo;</a>
     {% endif %}
 </div>
-{% endif %}
+{% endif %} -->
+
+
 
 {% endblock %}

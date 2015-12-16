@@ -6,8 +6,8 @@ def get_high_prices(symbol, date):
 	# date = datetime.date(2015, 10, 21)
 	day_before = date - timedelta(1)
 	day_after = date + timedelta(1)
-	print day_after
-	print date.today()
+	# print day_after
+	# print date.today()
 	if day_after == date.today() or day_after == date.today() - timedelta(1):
 		return (0, 0)
 	price = ystockquote.get_historical_prices(symbol, str(day_before), str(day_after))

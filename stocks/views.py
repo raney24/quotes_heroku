@@ -18,6 +18,49 @@ from datetime import date, timedelta
 from earnings_script import ER_Stock
 from scraper import *
 from earnings_script import *
+from .serializers import StockSerializer, UserSerializer
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.views import APIView
+from django.http import Http404
+from rest_framework import mixins
+from rest_framework import generics
+from rest_framework import permissions
+from stocks.permissions import IsOwnerOrReadOnly
+
+class JSONResponse(HttpResponse):
+	def __init__(self, data, **kwargs):
+		content = JSONRenderer().render(data)
+		kwargs['content_type'] = 'application/json'
+		super(JSONResponse, self).__init__(content, **kwargs)
+
+class APIStockList(generics.ListCreateAPIView):
+	queryset = Stock.objects.all()
+	serializer_class = StockSerializer
+
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+	def perform_create(self, serializer):
+		serializer.save(submitter=self.request.user)
+
+class APIStockDetail(generics.RetrieveUpdateDestroyAPIView):
+	queryset = Stock.objects.all()
+	serializer_class = StockSerializer
+
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+							IsOwnerOrReadOnly, )
+
+
+class APIUserList(generics.ListAPIView):
+	queryset = UserProfile.objects.all()
+	serializer_class = UserSerializer
+
+class APIUserDetail(generics.RetrieveAPIView):
+	queryset = UserProfile.objects.all()
+	serializer_class = UserSerializer
 
 class StockListView(ListView):
 	model = Stock
@@ -49,7 +92,7 @@ class EarningsReportView(DetailView):
 		for key in er_dict:
 			er_date = datetime.datetime.strptime(key, '%m/%d/%Y').date()
 			before_price, after_price = get_high_prices(stock.symbol, er_date)
-			print before_price, after_price
+			# print before_price, after_price
 			if before_price == 0 and after_price == 0:
 				er_quarter = get_er_quarter(er_date)
 				er = Earnings(before_price = before_price,
@@ -160,7 +203,38 @@ def register(request):
 
 
 
+# @api_view(['GET', 'POST', ])
+# @login_required
+# @csrf_exempt
+# def stock_collection(request, format=None):
+# 	if request.method == 'GET':
+# 		stocks = Stock.objects.all()
+# 		serializer = StockSerializer(stocks, many=True)
+# 		return Response(serializer.data)
+# 	elif request.method == 'POST':
+# 		serializer = StockSerializer(data=request.data)
+# 		if serializer.is_valid():
+# 			serializer.save()
+# 			return Response(serializer.data, status=status.HTTP_201_CREATED)
+# 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# @api_view(['GET', 'PUT', 'DELETE'])
+# def stock_element(request, pk, format=None):
+# 	try:
+# 		stock = Stock.objects.get(pk=pk)
+# 	except Stock.DoesNotExist:
+# 		return HttpResponse(status=404)
+
+# 	if request.method == 'GET':
+# 		serializer = StockSerializer(stock)
+# 		return Response(serializer.data)
+
+# 	elif request.method == 'PUT':
+# 		serializer = StockSerializer(stock, data=request.data)
+# 		if serializer.is_valid():
+# 			serializer.save()
+# 			return Response(serializer.data)
+# 		return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 
