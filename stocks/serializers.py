@@ -12,11 +12,16 @@ class StockSerializer(serializers.ModelSerializer):
 	projected_er_date = serializers.ReadOnlyField()
 	full_title = serializers.ReadOnlyField()
 
-
-class UserSerializer(serializers.ModelSerializer):
-	stock = serializers.PrimaryKeyRelatedField(many=True, queryset=Stock.objects.all())
-
+class EarningsSerializer(serializers.ModelSerializer):
 	class Meta:
-		model = User
-		fields = ('id', 'username', 'stocks')
+		model = Earnings
+		fields = '__all__'
+
+# class UserSerializer(serializers.ModelSerializer):
+# 	stock = serializers.PrimaryKeyRelatedField(many=True, queryset=Stock.objects.all())
+
+# 	class Meta:
+# 		model = UserProfile
+# 		fields = ('id', 'username', 'stock')
+
 		

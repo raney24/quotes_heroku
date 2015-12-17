@@ -11,7 +11,7 @@ class Stock(models.Model):
 	symbol = models.CharField("Stock Symbol", max_length=5, unique=True)
 	full_title = models.CharField("Stock Name", max_length=40, default="Unknown Stock")
 	submitted_on = models.DateTimeField(auto_now_add=True)
-	submitter = models.ForeignKey(User)
+	submitter = models.ForeignKey('auth.User')
 	# notes = models.TextField(blank=True)
 	last_accessed = models.DateTimeField(auto_now_add=True)
 	projected_er_date = models.DateField(default="2000-1-1")

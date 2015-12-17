@@ -45,8 +45,10 @@ urlpatterns = patterns('',
 	url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 	url(r'^api/v1/stocks/$', views.APIStockList.as_view()),
 	url(r'^api/v1/stocks/(?P<pk>[0-9]+)$', views.APIStockDetail.as_view()),	
-	url(r'^api/v1/users/$', views.APIUserList.as_view()),
-	url(r'^api/v1/users/(?P<pk>[0-9]+)$', views.APIUserDetail.as_view()),	
+
+	url(r'^api/v1/earnings/$', views.APIEarningsList.as_view()),
+	# url(r'^api/v1/users/$', views.APIUserList.as_view()),
+	# url(r'^api/v1/users/(?P<pk>[0-9]+)$', views.APIUserDetail.as_view()),	
 	# url(r'^', include(router.urls)),
 	
 

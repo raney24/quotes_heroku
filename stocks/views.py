@@ -2,6 +2,7 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.base import View
 from django.views.generic.edit import UpdateView, CreateView, UpdateView, DeleteView
 from .models import Stock, Earnings, UserProfile
+from django.contrib.auth.models import User
 from .forms import  StockForm, UserForm, UserProfileForm
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse, reverse_lazy
@@ -18,7 +19,7 @@ from datetime import date, timedelta
 from earnings_script import ER_Stock
 from scraper import *
 from earnings_script import *
-from .serializers import StockSerializer, UserSerializer
+from .serializers import StockSerializer, EarningsSerializer#, UserSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
@@ -53,14 +54,18 @@ class APIStockDetail(generics.RetrieveUpdateDestroyAPIView):
 	permission_classes = (permissions.IsAuthenticatedOrReadOnly,
 							IsOwnerOrReadOnly, )
 
+class APIEarningsList(generics.ListAPIView):
+	queryset = Earnings.objects.all()
+	serializer_class = EarningsSerializer
 
-class APIUserList(generics.ListAPIView):
-	queryset = UserProfile.objects.all()
-	serializer_class = UserSerializer
 
-class APIUserDetail(generics.RetrieveAPIView):
-	queryset = UserProfile.objects.all()
-	serializer_class = UserSerializer
+# class APIUserList(generics.ListAPIView):
+# 	queryset = User.objects.all()
+# 	serializer_class = UserSerializer
+
+# class APIUserDetail(generics.RetrieveAPIView):
+# 	queryset = UserProfile.objects.all()
+# 	serializer_class = UserSerializer
 
 class StockListView(ListView):
 	model = Stock
