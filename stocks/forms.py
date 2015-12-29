@@ -12,10 +12,13 @@ class StockForm(forms.ModelForm):
 
 class UserForm(forms.ModelForm):
 	class Meta:
-		model = User
-		fields = ('username', 'password')
+		model = UserProfile
+		# fields = ('username', 'password')
+		fields = '__all__'
 
 class UserProfileForm(forms.ModelForm):
+	aggressive = forms.BooleanField(widget=forms.CheckboxInput)
 	class Meta:
-		model = User
-		fields = ('username', 'password')
+		model = UserProfile
+		# fields = ('username', 'password')
+		fields = '__all__'

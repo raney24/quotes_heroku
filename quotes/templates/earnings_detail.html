@@ -5,53 +5,51 @@
 
 <p>name: {{ object.full_title }}</p>
 <p>symbol: {{ object.symbol }}</p>
+<div class="container">
+	<table class="table table-condensed">
+		<tr>
+			<th></th>
+		{% for er in stock.earnings_set.all %}
+			<td>{{ er.er_quarter }}</td>
+		{% endfor %}
+		</tr>
+		<tr>
+			<th>Price After</th>
+		{% for er in stock.earnings_set.all %}
+			<td id="after-price">{{ er.after_price }}</td>
+		{% endfor %}
+		</tr>
+		<tr>
+			<th>Price Before</th>
+		{% for er in stock.earnings_set.all %}
+			<td id="before-price">{{ er.before_price }}</td>
+		{% endfor %}
+		</tr>
+		<tr>
+			<th>Percent Change</th>
+		{% for er in stock.earnings_set.all %}
+			<td id="percent-change">{{ er.percent_change }}%</td>
+		{% endfor %}
+		</tr>
+		<tr>
+			<th>Date Released</th>
+		{% for er in stock.earnings_set.all %}
+			<td>{{ er.er_date }}</td>
+		{% endfor %}
+		</tr>
+	</table>
+</div>
 
-<table class="table table-condensed">
-	<tr>
-		<th></th>
-	{% for er in stock.earnings_set.all %}
-		<td>{{ er.er_quarter }}</td>
-	{% endfor %}
-	</tr>
-	<tr>
-		<th>Price After</th>
-	{% for er in stock.earnings_set.all %}
-		<td id="after-price">{{ er.after_price }}</td>
-	{% endfor %}
-	</tr>
-	<tr>
-		<th>Price Before</th>
-	{% for er in stock.earnings_set.all %}
-		<td id="before-price">{{ er.before_price }}</td>
-	{% endfor %}
-	</tr>
-	<tr>
-		<th>Percent Change</th>
-	{% for er in stock.earnings_set.all %}
-		<td id="percent-change">{{ er.percent_change }}%</td>
-	{% endfor %}
-	</tr>
-	<tr>
-		<th>Date Released</th>
-	{% for er in stock.earnings_set.all %}
-		<td>{{ er.er_date }}</td>
-	{% endfor %}
-	</tr>
-
-</table>
-
-<div id="chart" style="height: 250px;"></div>
-<p>Next ER: {{ object.projected_er_date }}</p>
+<div class="container">
+	<div id="chart" style="height: 250px;"></div>
+	<p>Next ER: {{ object.projected_er_date }}</p>
+</div>
 
 <script>
 	er_arr = [];
 	$('td#percent-change').each(function(){
 		er_arr.push($(this).text());
 	});
-		// data = [
-		// 	{ quarter: 'Q1'}
-		// ]
-		console.log(er_arr);
 	new Morris.Line({
 		element: 'chart',
 

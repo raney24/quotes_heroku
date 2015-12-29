@@ -43,7 +43,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'social.apps.django_app.default',
+    'registration',
+    'django.contrib.sites',
+
 
     'stocks',
     'quotes',
@@ -51,12 +53,6 @@ INSTALLED_APPS = (
 )
 
 AUTH_PROFILE_MODULE = "account.UserProfile"
-
-SOCIAL_AUTH_TWITTER_KEY = 'PMgImxZ6W7cxyj7wCqTvAdNpR'
-SOCIAL_AUTH_TWITTER_SECRET = 'V9HtlzSQ8I7Cq9HWDI8gt45JvGsPI43zuhH9aVk9xPIunMyogZ'
-SOCIAL_AUTH_FACEBOOK_KEY = '1621525324778809'
-SOCIAL_AUTH_FACEBOOK_SECRET = '308d297ea84756be4f28b6b4fa0bc144'
-
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
@@ -155,6 +151,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+SITE_ID = 1
 
 # Parse database configuration from $DATABASE_URL
 import dj_database_url

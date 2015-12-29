@@ -6,6 +6,8 @@ from scraper import *
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.shortcuts import render_to_response
+from scraper import *
+from earnings_script import *
 
 class Stock(models.Model):
 	symbol = models.CharField("Stock Symbol", max_length=5, unique=True)
@@ -56,7 +58,6 @@ class Earnings(models.Model):
 	er_quarter = models.TextField(default="Q1")
 	percent_change = models.DecimalField(max_digits=11, decimal_places=2, null=True)
 
-
 	def __unicode__(self):
 		return self.stock
 
@@ -65,6 +66,7 @@ class Earnings(models.Model):
 
 class UserProfile(models.Model):
 	user = models.OneToOneField(User, unique=True)
+	aggressive = models.BooleanField(default=False)
 
 	def __unicode__(self):
 		return "%s's profile" % self.user
