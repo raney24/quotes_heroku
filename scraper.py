@@ -33,9 +33,6 @@ def get_projected_er_date(symbol):
 		d = "2000-1-1"
 	return d
 
-
-get_projected_er_date("GOOG")
-
 def get_earnings_reports(symbol):
 	soup = get_soup(symbol)
 	letters = soup.find_all("div", class_="genTable")
