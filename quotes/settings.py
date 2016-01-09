@@ -29,9 +29,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# import django
-# django.setup()
-
 # Application definition
 
 INSTALLED_APPS = (
