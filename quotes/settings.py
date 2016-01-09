@@ -31,9 +31,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# import django
-# django.setup()
-
 # Application definition
 
 INSTALLED_APPS = (
@@ -51,6 +48,7 @@ INSTALLED_APPS = (
     'quotes',
     'rest_framework',
 )
+
 
 AUTH_PROFILE_MODULE = "account.UserProfile"
 

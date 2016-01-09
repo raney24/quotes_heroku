@@ -16,3 +16,6 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "quotes.settings")
 from dj_static import Cling
 
 application = Cling(get_wsgi_application())
+
+import django
+django.setup()
