@@ -2,10 +2,22 @@ from datetime import date, timedelta
 import datetime
 import ystockquote
 
+def prev_weekday(date):
+	date -= timedelta(1)
+	while date.weekday() > 4:
+		date -= timedelta(1)
+	return date
+
+def next_weekday(date):
+	date += timedelta(1)
+	if date.weekday() == 5:
+		date += timedelta(3)
+	return date
+
 def get_high_prices(symbol, date):
 	# date = datetime.date(2015, 10, 21)
-	day_before = date - timedelta(1)
-	day_after = date + timedelta(1)
+	day_before = prev_weekday(date)
+	day_after = next_weekday(date)
 	# print day_after
 	# print date.today()
 	if day_after == date.today() or day_after == date.today() - timedelta(1):
