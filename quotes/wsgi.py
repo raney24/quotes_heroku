@@ -8,7 +8,8 @@ https://docs.djangoproject.com/en/1.8/howto/deployment/wsgi/
 """
 
 import os
-
+import django
+django.setup()
 from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "quotes.settings")
@@ -17,5 +18,4 @@ from dj_static import Cling
 
 application = Cling(get_wsgi_application())
 
-import django
-django.setup()
+
