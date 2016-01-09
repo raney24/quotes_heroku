@@ -149,7 +149,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-SITE_ID = 1
+# SITE_ID = 1
 
 # Parse database configuration from $DATABASE_URL
 import dj_database_url
