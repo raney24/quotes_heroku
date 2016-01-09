@@ -107,17 +107,17 @@ WSGI_APPLICATION = 'quotes.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'quotes_db_test', # Or path to database file if using sqlite3.
-        # The following settings are not used with sqlite3:
-        'USER': 'Kyle',
-        'PASSWORD': 'sfenfcb@$',
-        'HOST': '127.0.0.1',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '', 
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+#         'NAME': 'quotes_db_test', # Or path to database file if using sqlite3.
+#         # The following settings are not used with sqlite3:
+#         'USER': 'Kyle',
+#         'PASSWORD': 'sfenfcb@$',
+#         'HOST': 'localhost',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+#         'PORT': '', 
+#     }
+# }
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
@@ -155,7 +155,7 @@ STATIC_URL = '/static/'
 import dj_database_url
 
 # COMMENT OUT FOR HEROKU DEPLOYMENT
-# DATABASES['default'] =  dj_database_url.config()
+DATABASES['default'] =  dj_database_url.config()
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
