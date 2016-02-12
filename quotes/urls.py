@@ -19,15 +19,21 @@ urlpatterns = patterns('',
 
 	url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}, name="login"),
 
-	url(r'^logout/$', 'django.contrib.auth.views.logout_then_login', name="logout"),
+	url(r'^register/$', views.register, name="register"),
+
+	url(r'^logout/$', 'django.contrib.auth.views.logout', name="logout"),
+
+	url(r'^users/delete/(?P<pk>\d+)/$', login_required(UserDeleteView.as_view()), name='user_delete'),
 
 	url(r'^accounts/', include('registration.backends.simple.urls')),
 
 	url(r'^users/(?P<slug>\w+)/$', UserProfileDetailView.as_view(), name="profile"),
 
-	url(r'^edit_profile/$', login_required(UserProfileEditView.as_view()), name="edit_profile"),
+	url(r'^users/edit_profile/(?P<slug>\w+)/$', UpdateUserProfileView.as_view(), name="edit_profile"),
 
 	url(r'^stock/create/$', StockCreateView.as_view(), name='stock_create'),
+
+	url(r'^stock/create/quick_add_(?P<symbol>\w+)/$', quick_add_stock, name="quick_add_stock"),
 
 	# url(r'^stock/(?P<pk>\d+)/$', StockDetailView.as_view(), name='stock_detail'),
 
@@ -45,8 +51,9 @@ urlpatterns = patterns('',
 	url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 	url(r'^api/v1/stocks/$', views.APIStockList.as_view()),
 	url(r'^api/v1/stocks/(?P<pk>[0-9]+)$', views.APIStockDetail.as_view()),	
-
+	url(r'^api/v1/stocks/(?P<pk>[0-9]+)/earnings/$', views.APIStockEarningsDetail.as_view()),	
 	url(r'^api/v1/earnings/$', views.APIEarningsList.as_view()),
+	# url(r'^api/v1/earnings/(?P<pk>[0-9]+)$', views.APIEarningsDetail.as_view()),
 	# url(r'^api/v1/users/$', views.APIUserList.as_view()),
 	# url(r'^api/v1/users/(?P<pk>[0-9]+)$', views.APIUserDetail.as_view()),	
 	# url(r'^', include(router.urls)),

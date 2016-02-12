@@ -20,7 +20,7 @@
 				<ul class="nav navbar-nav">
 					<li><a href="/">Stocks</a></li>
 					{% if user.is_authenticated %}
-					<li><a href="/stock/create">Add New</a></li>
+						<li><a href="/stock/create">Add New</a></li>
 					{% endif %}
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
@@ -28,7 +28,7 @@
 					<li><a href="/logout">Logout</a></li>
 					<li><a href="/users/{{user.username}}">{{ user.username }}</a></li>
 				{% else %}
-					<li><a href="/accounts/register">Register</a></li>
+					<li><a href="/register">Register</a></li>
 					<li><a href="/login">Login</a></li>
 				{% endif %}
 				</ul>
@@ -40,68 +40,10 @@
 	{% block content %}
 	{% endblock %}
 	</div>
-	<div id="footer">
-		<div id="StockTickerContainer" style="height: 32px; line-height: 32px; overflow: hidden;">
-		    <div id='dvStockTicker' class='stockTicker'>
-		    </div>
-		</div>
-	</div>
+	{%include 'partials/footer.html' %}
 </div>
 
 
 </body>
 </html>
 
-<script>
-
-$(window).load(function () {
-            StockPriceTicker();
-            setInterval(function() {StockPriceTicker();} , 60000);
-        });
-        function StockPriceTicker() {
-            symbol_arr = []
-            $('.stock-symbol').each(function(){
-              symbol_arr.push($(this).text());
-            });
-            console.log(symbol_arr);
-
-            var Symbol = "", CompName = "", Price = "", ChnageInPrice = "", PercentChnageInPrice = ""; 
-            // var CNames = "^FTSE,HSBA.L,SL.L,BATS.L,BLND.L,FLG.L,RBS.L,RMG.L,VOD.L";
-            var CNames = symbol_arr;
-            var flickerAPI = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22" + CNames + "%22)&env=store://datatables.org/alltableswithkeys";
-            var StockTickerHTML = "";
-            
-            var StockTickerXML = $.get(flickerAPI, function(xml) {
-                $(xml).find("quote").each(function () {
-                    Symbol = $(this).attr("symbol");
-                    $(this).find("Name").each(function () {
-                        CompName = $(this).text();
-                    });
-                    $(this).find("LastTradePriceOnly").each(function () {
-                        Price = $(this).text();
-                    });
-                    $(this).find("Change").each(function () {
-                        ChnageInPrice = $(this).text();
-                    });
-                    $(this).find("PercentChange").each(function () {
-                        PercentChnageInPrice = $(this).text();
-                    });
-                    
-                    var PriceClass = "GreenText", PriceIcon="up_green";
-                    if(parseFloat(ChnageInPrice) < 0) { PriceClass = "RedText"; PriceIcon="down_red"; }
-                    StockTickerHTML = StockTickerHTML + "<span class='" + PriceClass + "'>";
-                    StockTickerHTML = StockTickerHTML + "<span class='quote'>" + CompName + " (" + Symbol + ")</span> ";
-                    
-                    StockTickerHTML = StockTickerHTML + parseFloat(Price).toFixed(2) + " ";
-                    StockTickerHTML = StockTickerHTML + "<span class='" + PriceIcon + "'></span>" + parseFloat(Math.abs(ChnageInPrice)).toFixed(2) + " (";
-                    StockTickerHTML = StockTickerHTML + parseFloat( Math.abs(PercentChnageInPrice.split('%')[0])).toFixed(2) + "%)</span>";
-                });
-        
-                $("#dvStockTicker").html(StockTickerHTML);
-                $("#dvStockTicker").jStockTicker({interval: 30, speed: 2});
-            });
-        }
-
-
-
-</script>

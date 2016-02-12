@@ -1,9 +1,27 @@
 from bs4 import BeautifulSoup
 import urllib2
+from urllib2 import Request, urlopen
+
 import re
 from datetime import datetime
 # import datetime
 import dateutil.parser as dparser
+
+def get_potential_stocks(current_stocks):
+	sgi_url = "http://sgi.seleritycorp.com/category/north-america/"
+	# proxy_handler = urllib2.ProxyHandler({'http': 'http://sgi.seleritycorp.com/category/north-america/'})
+	req = urllib2.Request(sgi_url, headers={'User-Agent' : 'Magic Browser'})
+	# opener = urllib2.urlopen(req)
+	r = urlopen(req).read()
+	soup = BeautifulSoup(r, "html.parser")
+	stock_symbol = soup.find_all("h2", { "class" : "subheader" }, limit=10)
+	upcoming_er_array = []
+	for s in stock_symbol:
+		s = str(s.get_text())
+		s = s[s.find("(")+1:s.find(")")]
+		upcoming_er_array.append(s)
+
+	return upcoming_er_array
 
 def get_soup(symbol):
 	nasURL = 'http://www.nasdaq.com/earnings/report/'

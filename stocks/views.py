@@ -1,26 +1,18 @@
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView, View
 from django.views.generic.base import View
-from django.views.generic.edit import UpdateView, CreateView, UpdateView, DeleteView
+from django.views.generic.edit import UpdateView, CreateView, UpdateView, DeleteView, FormView
 from .models import Stock, Earnings, UserProfile
 from django.contrib.auth.models import User
-from .forms import  StockForm, UserForm, UserProfileForm
-from django.contrib.auth import get_user_model
-from django.core.urlresolvers import reverse, reverse_lazy
-from django.shortcuts import render
+from .forms import  *
+from django.contrib.auth import get_user_model, authenticate
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
-from django.shortcuts import render_to_response, redirect, render
-from django.contrib.auth import logout as auth_logout
-from django.contrib.auth.decorators import login_required
-import ystockquote
-import datetime
+from django.shortcuts import redirect, render, render_to_response
 from datetime import datetime
 from datetime import date, timedelta
 from earnings_script import ER_Stock
 from scraper import *
 from earnings_script import *
 from .serializers import StockSerializer, EarningsSerializer#, UserSerializer
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
@@ -31,6 +23,8 @@ from rest_framework import mixins
 from rest_framework import generics
 from rest_framework import permissions
 from stocks.permissions import IsOwnerOrReadOnly
+import ystockquote
+import datetime
 
 class JSONResponse(HttpResponse):
 	def __init__(self, data, **kwargs):
@@ -58,6 +52,16 @@ class APIEarningsList(generics.ListAPIView):
 	queryset = Earnings.objects.all()
 	serializer_class = EarningsSerializer
 
+class APIEarningsDetail(generics.RetrieveUpdateDestroyAPIView):
+	queryset = Earnings.objects.filter(stock = 1)
+	serializer_class = EarningsSerializer
+
+class APIStockEarningsDetail(generics.ListAPIView):
+	serializer_class = EarningsSerializer
+	def get_queryset(self):
+		stock_id = self.kwargs['pk']
+		return Earnings.objects.filter(stock=stock_id)
+
 
 # class APIUserList(generics.ListAPIView):
 # 	queryset = User.objects.all()
@@ -70,7 +74,19 @@ class APIEarningsList(generics.ListAPIView):
 class StockListView(ListView):
 	model = Stock
 	context_object_name = 'stock_symbols'
+	current_stocks = Stock.objects.all()
+	form_class = StockForm
 
+	def get_context_data(self, **kwargs):
+		context = super(StockListView, self).get_context_data(**kwargs)
+		context['er_list'] = get_potential_stocks(self.current_stocks)
+		return context
+
+def quick_add_stock(request, symbol):
+	stock = Stock(symbol=symbol, submitter=request.user)
+	stock.objects.create_stock()
+	print stock.full_title
+	return redirect("home")
 
 class StockCreateView(CreateView):
 	model = Stock
@@ -100,12 +116,13 @@ class EarningsReportView(DetailView):
 			# print before_price, after_price
 			if before_price == 0 and after_price == 0:
 				er_quarter = get_er_quarter(er_date)
-				er = Earnings(before_price = before_price,
-							after_price = after_price, 
-									er_date = er_date, 
-									er_quarter = er_quarter,
-									percent_change = 0,
-									)
+				er = Earnings(
+								before_price = before_price,
+								after_price = after_price, 
+								er_date = er_date, 
+								er_quarter = er_quarter,
+								percent_change = 0,
+							)
 				er.stock = stock
 				er.save()
 				return stock
@@ -151,7 +168,12 @@ class StockDeleteView(DeleteView):
 	model = Stock
 	success_url = "/"
 
-	# template_name = 'delete_note.html'
+class AutoCreateStock(View):
+	# model = Stock
+	# success_url = "/"
+	def get(request, *args, **kwargs):
+		Stock(symbol="AAPL", submitter=2).save()
+		return HttpResponse("/")
 
 class UserProfileDetailView(DetailView):
 	model = get_user_model()
@@ -160,37 +182,38 @@ class UserProfileDetailView(DetailView):
 
 	def get_object(self, queryset=None):
 		user = super(UserProfileDetailView, self).get_object(queryset)
-		UserProfile.objects.get_or_create(user=user)
+		user = UserProfile.objects.get_or_create(user=user)
+		print user
 		return user
 
-class UserProfileEditView(UpdateView):
-	model = UserProfile
-	form_class = UserProfileForm
-	template_name = "edit_profile.html"
+class UserDeleteView(DeleteView):
+	model = User
+	success_url = '/'
 
-	def get_object(self, queryset=None):
-		return UserProfile.objects.get_or_create(user = self.request.user)[0]
+class AccountRegistrationView(FormView):
+	template_name = 'registration/registration_form.html'
+	form_class = UserForm
 
-	def get_success_url(self):
-		return reverse("profile", kwargs={'slug': self.request.user})
+	def form_valid(self, form):
+		AccountRegistrationView.register_user(self.request, **form.cleaned_data)
+		return super(AccountRegistrationView, self).form_valid(self, form)
 
-@login_required
-def user_profile(request, username):
-	user = get_object_or_404(User, username=username)
-	profile = UserProfile.objects.get(user=user)
+	def get_context_data(self, **kwargs):
+		context = super(AccountRegistrationView, self).get_context_data(**kwargs)
+		context.update(self.extra_context)
 
-	return render(request, 'user_detail.html', {'profile': profile})
 
 from django.template.defaulttags import register
-from .forms import UserForm
+from .forms import UserProfileForm
 def register(request):
-    user_form = UserForm()
+    template = "registration/registration_form.html"
+    user_form = UserProfileForm()
     if request.user.is_authenticated():
         
-        return render(request, 'public/register.html', {'form': user_form})
+        return render(request, 'registration/registration_form.html', {'form': user_form})
 
     if request.method == "POST":
-        user_form = UserForm(request.POST)
+        user_form = UserProfileForm(request.POST)
 
         if user_form.is_valid():
             user = user_form.save()
@@ -201,45 +224,18 @@ def register(request):
             this_user.save()
             user = authenticate(username=request.POST['username'],
                                 password=request.POST['password'])
-            login(request, user)
             return redirect('stock_list.html')
 
-    return render(request, 'public/register.html', {'form': user_form})
+    return render(request, 'registration/registration_form.html', {'form': user_form})
+
+class UpdateUserProfileView(UpdateView):
+	model = User
+	slug_field = "username"
+	form_class = UserProfileForm
+	template_name = 'edit_profile.html'
 
 
 
-# @api_view(['GET', 'POST', ])
-# @login_required
-# @csrf_exempt
-# def stock_collection(request, format=None):
-# 	if request.method == 'GET':
-# 		stocks = Stock.objects.all()
-# 		serializer = StockSerializer(stocks, many=True)
-# 		return Response(serializer.data)
-# 	elif request.method == 'POST':
-# 		serializer = StockSerializer(data=request.data)
-# 		if serializer.is_valid():
-# 			serializer.save()
-# 			return Response(serializer.data, status=status.HTTP_201_CREATED)
-# 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# @api_view(['GET', 'PUT', 'DELETE'])
-# def stock_element(request, pk, format=None):
-# 	try:
-# 		stock = Stock.objects.get(pk=pk)
-# 	except Stock.DoesNotExist:
-# 		return HttpResponse(status=404)
-
-# 	if request.method == 'GET':
-# 		serializer = StockSerializer(stock)
-# 		return Response(serializer.data)
-
-# 	elif request.method == 'PUT':
-# 		serializer = StockSerializer(stock, data=request.data)
-# 		if serializer.is_valid():
-# 			serializer.save()
-# 			return Response(serializer.data)
-# 		return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 

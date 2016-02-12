@@ -1,40 +1,44 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 {% block content %}
-
-{% if is_paginated %}
-<ol start="{{ page_obj.start_index }}">
-{% else %}
-<ol>
-{% endif %}
-{% for stock in stock_symbols %}
-    <li>
-      <a href="{% url 'stock_er_detail' pk=stock.pk %}">	
-      <b class="stock-symbol">{{ stock.symbol }}</b>
-      </a>
-      {{ stock.full_title }}
-    </li>
-{% endfor %}
-</ol>
-
-{% for er in stock.earnings_set %}
-	<li>
-		<p>before: {{ er.before_price }}</p>
-		<p>after: {{ er.after_price }}</p>
-
-    </li>
-{% endfor %}
-
-
-
-<!-- {% if is_paginated %}
-<div class="pagination">
-    {% if page_obj.has_next %}
-    <a href="?page={{ page_obj.next_page_number }}">More &raquo;</a>
-    {% endif %}
+<div class="container">
+  <div class="col-md-6">
+    <ol>
+    {% for stock in stock_symbols %}
+      <li>
+        <a href="{% url 'stock_er_detail' pk=stock.pk %}">	
+        <b class="stock-symbol">{{ stock.symbol }}</b>
+        </a>
+        {{ stock.full_title }}
+      </li>
+    {% endfor %}
+    </ol>
+  </div>
+  <div class="col-md-6">
+    <table>
+    <tr>
+      <th>Stock</th>
+    </tr>
+    {% for e in er_list %}
+    <tr>
+      <td>
+      <form method="post" action="{% url 'quick_add_stock' e %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">add {{ e }}</button>
+      </form>
+        
+        <!-- <form method="post" action="" onsubmit="return false">
+          <input type="hidden" value="{{ e }}" name="mytextbox" />
+          <input type="submit" class="btn" value="Submit {{ e }}" name="mybtn">
+        </form> -->
+      </td>
+    </tr>
+    {% endfor %}
+    </table>
+  </div>
 </div>
-{% endif %} -->
 
-
+<script type="text/javascript">
+</script>
 
 {% endblock %}

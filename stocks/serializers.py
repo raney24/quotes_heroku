@@ -17,6 +17,9 @@ class EarningsSerializer(serializers.ModelSerializer):
 		model = Earnings
 		fields = '__all__'
 
+	def __unicode__(self):
+		return self.Earnings
+
 # class UserSerializer(serializers.ModelSerializer):
 # 	stock = serializers.PrimaryKeyRelatedField(many=True, queryset=Stock.objects.all())
 

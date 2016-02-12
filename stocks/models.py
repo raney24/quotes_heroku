@@ -13,39 +13,40 @@ class Stock(models.Model):
 	symbol = models.CharField("Stock Symbol", max_length=5, unique=True)
 	full_title = models.CharField("Stock Name", max_length=40, default="Unknown Stock")
 	submitted_on = models.DateTimeField(auto_now_add=True)
-	submitter = models.ForeignKey('auth.User')
+	submitter = models.ForeignKey('auth.User', blank=True)
 	# notes = models.TextField(blank=True)
 	last_accessed = models.DateTimeField(auto_now_add=True)
 	projected_er_date = models.DateField(default="2000-1-1")
-	# current_price = models.DecimalField(max_digits = 10, decimal_places=2)
 
 	objects = models.Manager()
 
-	# def save(self, force_insert=False, force_update=False):
 	def save(self, **kwargs):
 		try: 
 			self.symbol = self.symbol.upper()
 
-
 			self.full_title = get_stock_title(self.symbol)
 
 			pd = get_projected_er_date(self.symbol)
-			# print "pd:", pd
 			self.projected_er_date = get_projected_er_date(self.symbol)
-		# projected_er_date = get_projected_er_date(stock.symbol)
-		# stock = Stock(projected_er_date = projected_er_date)
-
-		# super(Stock, self).save(force_insert, force_update)
 
 			super(Stock, self).save(**kwargs)
 		except IntegrityError as e:
 			return render_to_response("stocks/stock_form.html", {"message": e.message})
 
+	def create(self, **kwargs):
+		self.symbol = self.symbol.upper()
+
+		self.full_title = get_stock_title(self.symbol)
+		pd = get_projected_er_date(self.symbol)
+		self.projected_er_date = pd
+
+		super(Stock, self).save(**kwargs)
+
 	def last_er(self):
 		return self.earnings_set.order_by(id).last()
 
 	def __unicode__(self):
-		return self.symbol
+		return self
 
 	def get_absolute_url(self):
 		return reverse("stock_detail", kwargs={"pk": str(self.id)})
@@ -68,9 +69,10 @@ class UserProfile(models.Model):
 	user = models.OneToOneField(User, unique=True)
 	aggressive = models.BooleanField(default=False)
 
+	# objects = UserProfileManager()
+
 	def __unicode__(self):
 		return "%s's profile" % self.user
-
 
 
 
