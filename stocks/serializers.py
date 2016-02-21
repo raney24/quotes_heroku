@@ -8,6 +8,10 @@ class StockSerializer(serializers.ModelSerializer):
 		fields = '__all__'
 		# fields = ('pk', 'symbol', 'submitted_on', 'submitter', 'last_accessed', 'projected_er_date')
 
+	# def __init__(self, *args, **kwargs):
+	# 	symbol = request.symbol
+	# 	super(StockSerializer, self).__init__(symbol=symbol, *args, **kwargs)
+
 	submitter = serializers.ReadOnlyField(source='submitter.username')
 	projected_er_date = serializers.ReadOnlyField()
 	full_title = serializers.ReadOnlyField()

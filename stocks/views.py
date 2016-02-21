@@ -25,6 +25,7 @@ from rest_framework import permissions
 from stocks.permissions import IsOwnerOrReadOnly
 import ystockquote
 import datetime
+from django.core.urlresolvers import reverse
 
 class JSONResponse(HttpResponse):
 	def __init__(self, data, **kwargs):
@@ -35,6 +36,14 @@ class JSONResponse(HttpResponse):
 class APIStockList(generics.ListCreateAPIView):
 	queryset = Stock.objects.all()
 	serializer_class = StockSerializer
+
+	def post(self, request, *args, **kwargs):
+		symbol = request.data['symbol']
+		symbol = symbol.upper()
+		print symbol
+		quick_add_stock(request, symbol)
+		return redirect("/api/v1/stocks/")
+		return self.create(request, *args, **kwargs)
 
 	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
@@ -83,21 +92,55 @@ class StockListView(ListView):
 		return context
 
 def quick_add_stock(request, symbol):
-	stock = Stock(symbol=symbol, submitter=request.user)
-	stock.objects.create_stock()
-	print stock.full_title
+	Stock.objects.create(symbol=symbol, submitter=request.user)
+	create_er(request, symbol)
 	return redirect("home")
+
+def create_er(request, symbol):
+	stock = Stock.objects.get(symbol=symbol)
+	er_dict = get_earnings_reports(stock.symbol)
+	for key in er_dict:
+		er_date = datetime.datetime.strptime(key, '%m/%d/%Y').date()
+		before_price, after_price = get_high_prices(stock.symbol, er_date)
+		# print before_price, after_price
+		if before_price == 0 and after_price == 0:
+			er_quarter = get_er_quarter(er_date)
+			er = Earnings(
+							before_price = before_price,
+							after_price = after_price, 
+							er_date = er_date, 
+							er_quarter = er_quarter,
+							percent_change = 0,
+						)
+			er.stock = stock
+			er.save()
+			return stock
+		er_quarter = get_er_quarter(er_date)
+		percent_change = float(before_price - after_price) / before_price*(-1) * 100
+		percent_change = round(percent_change, 2)
+
+		er = Earnings(before_price = before_price, 
+						after_price = after_price, 
+						er_date = er_date, 
+						er_quarter = er_quarter,
+						percent_change = percent_change,
+						)
+		er.stock = stock
+
+		if not Earnings.objects.filter(er_quarter = er.er_quarter, stock_id = er.stock_id).exists():
+			er.save()
 
 class StockCreateView(CreateView):
 	model = Stock
 	form_class = StockForm
 	success_url = "/"
 
+
 	def form_valid(self, form):
 		f = form.save(commit=False)
 		f.submitter = self.request.user
 		f.save()
-
+		create_er(self.request, f.symbol)
 		return super(CreateView, self).form_valid(form)
 
 
@@ -166,7 +209,10 @@ class StockUpdateView(UpdateView):
 
 class StockDeleteView(DeleteView):
 	model = Stock
-	success_url = "/"
+	def get_success_url(self):
+		user = self.request.user
+		return "/users/" + str(user)
+
 
 class AutoCreateStock(View):
 	# model = Stock
