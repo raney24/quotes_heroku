@@ -164,6 +164,8 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # Allow all host headers
 ALLOWED_HOSTS = ['*']
 
+REST_SESSION_LOGIN = False
+
 # Static asset configuration
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
